@@ -1,0 +1,97 @@
+syntax = "proto3";
+package user;
+option go_package = "userdemo";
+
+message BaseResp {
+  int64 status_code = 1;
+  string status_message = 2;
+  int64 service_time = 3;
+}
+
+message User {
+  int64 id = 1;
+  string user_name = 2;
+  int64 follow_count = 3;
+  int64 follower_count = 4;
+  bool is_follow = 5;
+}
+
+message CreateUserRequest {
+  string user_name = 1;
+  string password = 2;
+}
+
+message CreateUserResp{
+  int64 id = 1;
+  BaseResp base_resp = 2;
+}
+
+message CheckUserRequest{
+  string user_name = 1;
+  string password = 2;
+}
+
+message CheckUserResp {
+  int64 user_id = 1;
+  BaseResp base_resp = 2;
+}
+
+message GetUsersRequest {
+  repeated int64 user_ids = 1;
+  int64 my_id = 2;
+}
+
+message GetUsersResp {
+  repeated User users = 1;
+  BaseResp base_resp = 2;
+}
+
+message AddFollowerRequest {
+  int64 user_id = 1;
+  int64 follower_id = 2;
+}
+
+message AddFollowerResp {
+  BaseResp base_resp = 1;
+}
+
+message RmFollowerRequest {
+  int64 user_id = 1;
+  int64 follower_id = 2;
+}
+
+message RmFollowerResp {
+  BaseResp base_resp = 1;
+}
+
+message GetFollowRequest {
+  int64 user_id = 1;
+}
+
+message GetFollowResp {
+  repeated User follows = 1;
+  BaseResp base_resp = 2;
+}
+
+message GetFollowerRequest {
+  int64 user_id = 1;
+}
+
+message GetFollowerResp {
+  repeated User followers = 1;
+  BaseResp base_resp = 2;
+}
+
+service UserService {
+  rpc CheckUser (CheckUserRequest) returns (CheckUserResp) {}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResp){}
+  rpc GetUsers (GetUsersRequest) returns (GetUsersResp){}
+  rpc AddFollower(AddFollowerRequest) returns (AddFollowerResp){}
+  rpc RmFollower(RmFollowerRequest) returns (RmFollowerResp){}
+  rpc GetFollow(GetFollowRequest) returns (GetFollowResp){}
+  rpc GetFollower(GetFollowerRequest) returns (GetFollowerResp){}
+}
+
+
+
+

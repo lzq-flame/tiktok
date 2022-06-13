@@ -1,0 +1,71 @@
+syntax = "proto3";
+package comment;
+option go_package = "comment";
+
+message CommentBaseResp {
+  int64 status_code = 1;
+  string status_message = 2;
+  int64 service_time = 3;
+}
+
+message Comment {
+  int64 comment_id = 1;
+  CommentUser user = 2;
+  string content = 3;
+  string create_date = 4;
+}
+
+message CommentUser {
+  int64 id = 1;
+  string user_name = 2;
+  int64 follow_count = 3;
+  int64 follower_count = 4;
+  bool is_follow = 5;
+}
+
+message AddCommentRequest{
+  int64 user_id = 1;
+  int64 video_id = 2;
+  string comment_text = 3;
+}
+
+message AddCommentResp {
+  CommentBaseResp base_resp = 1;
+}
+
+message DelCommentRequest {
+  int64 comment_id = 1;
+  int64 user_id = 2;
+  int64 video_id = 3;
+}
+
+message DelCommentResp {
+  CommentBaseResp base_resp = 1;
+}
+
+message GetCommentCountRequest {
+  int64 video_id = 1;
+}
+
+message GetCommentCountResp {
+  int64 comment_count = 1;
+  CommentBaseResp base_resp = 2;
+}
+
+message GetCommentListRequest {
+  int64 video_id = 1;
+  int64 user_id = 2;
+}
+
+message GetCommentListResp {
+  repeated Comment comment_list = 1;
+  CommentBaseResp base_resp = 2;
+}
+
+service CommentService {
+  rpc AddComment(AddCommentRequest) returns (AddCommentResp){}
+  rpc DelComment(DelCommentRequest) returns (DelCommentResp){}
+  rpc GetCommentCount(GetCommentCountRequest) returns (GetCommentCountResp){}
+  rpc GetCommentList(GetCommentListRequest) returns (GetCommentListResp){}
+}
+

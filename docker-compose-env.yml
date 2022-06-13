@@ -1,0 +1,60 @@
+version: '3'
+services:
+  # Docker Compose environment variables
+  # 
+  redis:
+    image: redis:6.2.5
+    container_name: redis-kitex
+    ports:
+      - 6379:6379
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    volumes:
+      # 数据文件
+      - ./data/redis/data:/data:rw
+      - ./deploy/redis/redis.conf:/etc/redis/redis.conf
+    command: "redis-server /etc/redis/redis.conf --appendonly yes"
+    privileged: true
+    restart: always
+
+
+  nginx-static-server:
+    image: nginx:1.21.5
+    container_name: nginx-static-server-kitex
+    restart: always
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - 80:80
+    volumes:
+      - ./deploy/nginx/conf.d:/etc/nginx/conf.d
+      - ./data/nginx/log:/var/log/nginx
+      - ./data/video:/etc/home/static/video
+      - ./data/cover:/etc/home/static/cover
+
+  mysql:
+    image: 'mysql:latest'
+    container_name: mysql-kitex
+    ports:
+      - 9910:3306
+    environment:
+      - MYSQL_DATABASE=douyin
+      - MYSQL_USER=lzq
+      - MYSQL_PASSWORD=lzq
+      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+
+  Etcd:
+    image: 'bitnami/etcd:latest'
+    container_name: Etcd_kitex
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    ports:
+      - 2379:2379
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+
